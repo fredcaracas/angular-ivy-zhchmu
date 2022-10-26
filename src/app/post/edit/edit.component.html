@@ -1,0 +1,94 @@
+<div class="container">
+  <h1>Editar Vehiculo</h1>
+  <br /><br />
+
+  <a
+    href="#"
+    routerLink="/post/index"
+    class="btn btn-primary"
+    style="background-color: rgb(175, 17, 17);"
+    >Volver</a
+  >
+  <br /><br />
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="form-group">
+      <label for="id">Id:</label>
+      <input
+        formControlName="id"
+        id="id"
+        type="text"
+        [(ngModel)]="post.id"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="marca">Marca:</label>
+      <textarea
+        formControlName="marca"
+        id="marca"
+        type="text"
+        [(ngModel)]="post.marca"
+        class="form-control"
+      >
+      </textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="modelo">Modelo:</label>
+      <input
+        formControlName="modelo"
+        id="modelo"
+        type="text"
+        [(ngModel)]="post.modelo"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="anio">Año:</label>
+      <textarea
+        formControlName="anio"
+        id="anio"
+        type="text"
+        [(ngModel)]="post.anio"
+        class="form-control"
+      >
+      </textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="color">Color:</label>
+      <input
+        formControlName="color"
+        id="color"
+        type="text"
+        [(ngModel)]="post.color"
+        class="form-control"
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="precio">Precio:</label>
+      <textarea
+        formControlName="precio"
+        id="precio"
+        type="text"
+        [(ngModel)]="post.precio"
+        class="form-control"
+      >
+      </textarea>
+    </div>
+
+    <br />
+    <button
+      class="btn btn-primary"
+      type="submit"
+      [disabled]="!form.valid"
+      style="background-color: rgb(175, 17, 17);"
+    >
+      Editar
+    </button>
+  </form>
+</div>

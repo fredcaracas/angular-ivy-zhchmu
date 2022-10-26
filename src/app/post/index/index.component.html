@@ -1,0 +1,58 @@
+<div class="container">
+  <h1 style="color: rgb(175, 17, 17); text-align: center; font-size: 500%;">
+    MotorPsico
+  </h1>
+
+  <a
+    href="#"
+    routerLink="/post/create/"
+    class="btn btn-success"
+    style="background-color: rgb(175, 17, 17);"
+    >Agregar Vehiculo</a
+  >
+  <hr />
+
+  <table class="table table-bordered">
+    <tr>
+      <th>ID</th>
+      <th>Marca</th>
+      <th>Modelo</th>
+      <th>Año</th>
+      <th>Color</th>
+      <th>Precio</th>
+      <th width="200px"></th>
+    </tr>
+    <tr *ngFor="let post of posts">
+      <td>{{ post.id }}</td>
+      <td>{{ post.marca }}</td>
+      <td>{{ post.modelo }}</td>
+      <td>{{ post.anio }}</td>
+      <td>{{ post.color }}</td>
+      <td>{{ post.precio }}</td>
+      <td>
+        <a
+          href="#"
+          [routerLink]="['/post/', post.id, 'view']"
+          class="btn btn-info"
+          style="background-color: rgb(21, 214, 79); margin-right: 10px; color: rgb(235, 231, 231);"
+          >Ver</a
+        >
+        <a
+          href="#"
+          [routerLink]="['/post/', post.id, 'edit']"
+          class="btn btn-primary"
+          style="background-color: rgb(40, 116, 231); margin-right: 10px;"
+          >Editar</a
+        >
+        <button
+          type="button"
+          (click)="deletePost(post.id)"
+          class="btn btn-danger"
+          style="background-color: rgb(175, 17, 17);"
+        >
+          Eliminar
+        </button>
+      </td>
+    </tr>
+  </table>
+</div>

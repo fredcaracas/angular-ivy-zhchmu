@@ -1,0 +1,108 @@
+const sinon = require('sinon');
+const chai = require('chai');
+const expect = chai.expect;
+const mongoose = require('mongoose');
+const Excel = require('exceljs');
+const { loadCustomAttributes } = require('./path_to_your_file');
+
+describe('loadCustomAttributes', () => {
+    let configStub;
+    let connectStub;
+    let readFileStub;
+    let deleteManyStub;
+    let saveStub;
+    
+    beforeEach(() => {
+        // Stub config loading
+        configStub = sinon.stub(miConfig, 'loadConfig').callsFake((envName, callback) => {
+            callback({
+                userId: 'user',
+                pass: 'pass',
+                node: 'node',
+                port: 'port',
+                dbName: 'testDB',
+                authdbName: 'authDB',
+                replicaSet: 'replicaSet'
+            });
+        });
+
+        // Stub mongoose connect
+        connectStub = sinon.stub(mongoose, 'connect').returns(Promise.resolve());
+
+        // Stub Excel file reading
+        readFileStub = sinon.stub(Excel.Workbook.prototype.xlsx, 'readFile').returns(Promise.resolve());
+
+        // Stub MongoDB model methods
+        deleteManyStub = sinon.stub().returns(Promise.resolve());
+        saveStub = sinon.stub().returns(Promise.resolve({ PlanID: 'TestPlan', Tags: ['Tag1'] }));
+
+        // Override the model with stubs
+        sinon.stub(CustomAttributes, 'deleteMany').callsFake(deleteManyStub);
+        sinon.stub(CustomAttributes.prototype, 'save').callsFake(saveStub);
+    });
+
+    afterEach(() => {
+        sinon.restore();
+    });
+
+    it('should load custom attributes successfully', (done) => {
+        loadCustomAttributes('testEnv', 'testFile', (status, error) => {
+            expect(status).to.equal('success');
+            expect(error).to.be.undefined;
+            done();
+        });
+    });
+
+    it('should handle errors when loading config', (done) => {
+        configStub.callsFake((envName, callback) => {
+            callback(null); // Simulate config loading failure
+        });
+
+        loadCustomAttributes('testEnv', 'testFile', (status, error) => {
+            expect(status).to.equal('failure');
+            expect(error).to.exist;
+            done();
+        });
+    });
+
+    it('should handle MongoDB connection errors', (done) => {
+        connectStub.returns(Promise.reject(new Error('Connection error')));
+
+        loadCustomAttributes('testEnv', 'testFile', (status, error) => {
+            expect(status).to.equal('failure');
+            expect(error).to.exist;
+            done();
+        });
+    });
+
+    it('should handle Excel file reading errors', (done) => {
+        readFileStub.returns(Promise.reject(new Error('File read error')));
+
+        loadCustomAttributes('testEnv', 'testFile', (status, error) => {
+            expect(status).to.equal('failure');
+            expect(error).to.exist;
+            done();
+        });
+    });
+
+    it('should handle errors during database operations', (done) => {
+        deleteManyStub.returns(Promise.reject(new Error('Deletion error')));
+
+        loadCustomAttributes('testEnv', 'testFile', (status, error) => {
+            expect(status).to.equal('failure');
+            expect(error).to.exist;
+            done();
+        });
+    });
+
+    it('should correctly process and save rows from Excel', (done) => {
+        // You might want to add specific data to simulate row processing
+        // Override the logic to simulate processing each row as needed
+
+        loadCustomAttributes('testEnv', 'testFile', (status, error) => {
+            expect(status).to.equal('success');
+            expect(saveStub.called).to.be.true; // Check if save was called
+            done();
+        });
+    });
+});
